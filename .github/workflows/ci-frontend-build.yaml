@@ -46,7 +46,6 @@ jobs:
 
       - name: BuildAndPush
         if: "!contains(github.ref_name, 'SONAR')"
-        id: docker_build
         env:
           DOCKER_BUILDKIT: 1
         run: |
@@ -59,9 +58,6 @@ jobs:
           docker build --ssh default -t ${{ secrets.CFD_ACR_REGISTRY }}/frontend/${{ secrets.CFD_SERVICENAME }}:${{ github.ref_name }} .
           docker push ${{ secrets.CFD_ACR_REGISTRY }}/frontend/${{ secrets.CFD_SERVICENAME }}:${{ github.ref_name }}
 
-      - name: ImageDigest
-        run: echo -e "\e[92m ${{ steps.docker_build.outputs.digest }} \e[0m"
-
       - name: BuildAndPushWithCodeScan
         if: "contains(github.ref_name, 'SONAR')"
         uses: docker/build-push-action@v3
@@ -72,7 +68,3 @@ jobs:
           build-args: SONARQUBE_TOKEN=${{ secrets.CFD_SONARQUBE_TOKEN }}, CI_COMMIT_TAG=${{ github.ref_name }}
           push: true
           tags: ${{ secrets.CFD_ACR_REGISTRY }}/frontend/${{ secrets.CFD_SERVICENAME }}:${{ github.ref_name }}
-
-      - name: ImageDigest (approvalui)
-        if: "contains(github.ref_name, 'SONAR')"
-        run: echo -e "\e[92m ${{ steps.docker_build_sonar.outputs.digest }} \e[0m"
