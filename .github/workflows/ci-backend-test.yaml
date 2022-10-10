@@ -77,7 +77,14 @@ jobs:
           git checkout HEAD .gitmodules
         continue-on-error: true
 
-      - name: DockerLogin
+      - name: DockerLoginB2P
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.B2P_ACR_REGISTRY }}
+          username: ${{ secrets.B2P_ACR_USER }}
+          password: ${{ secrets.B2P_ACR_TOKEN }}
+
+      - name: DockerLoginCFD
         uses: azure/docker-login@v1
         with:
           login-server: ${{ secrets.CFD_ACR_REGISTRY }}

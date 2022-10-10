@@ -30,7 +30,14 @@ jobs:
       - name: SetupDockerBuildx
         uses: docker/setup-buildx-action@v2
 
-      - name: DockerLogin
+      - name: DockerLoginB2P
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.B2P_ACR_REGISTRY }}
+          username: ${{ secrets.B2P_ACR_USER }}
+          password: ${{ secrets.B2P_ACR_TOKEN }}
+
+      - name: DockerLoginCFD
         uses: azure/docker-login@v1
         with:
           login-server: ${{ secrets.CFD_ACR_REGISTRY }}
