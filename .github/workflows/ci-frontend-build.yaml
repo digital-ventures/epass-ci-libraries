@@ -1,0 +1,71 @@
+on:
+  workflow_call:
+jobs:
+  BuildAndRelease:
+    # runs-on: ubuntu-latest
+    runs-on: [self-hosted, b2p]
+    # container: node:16.13.0-alpine
+    container: docker
+    steps:
+      - name: AddAPK
+        run: apk --no-cache add git jq tar openssh
+
+      - uses: actions/checkout@v3
+        with: 
+          ssh-key: "${{ secrets.SSH_PRIVATE_KEY }}"
+          ssh-strict: 'StrictHostKeyChecking=no'
+          # submodules: 'true'   #set-safe-directory option of checkout didn't work
+
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+
+      - name: GitConfig
+        run: |
+          git config --global user.name ${{ secrets.CFD_GIT_USER }}
+          git config --global user.email ${{ secrets.CFD_GIT_USER }}@dv.co.th
+          git config --global --add safe.directory ${GITHUB_WORKSPACE}
+
+      - name: SetupDockerBuildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: DockerLogin
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.CFD_ACR_REGISTRY }}
+          username: ${{ secrets.CFD_ACR_USER }}
+          password: ${{ secrets.CFD_ACR_TOKEN }}
+
+      - name: BuildAndPush
+        if: "!contains(github.ref_name, 'SONAR')"
+        id: docker_build
+        env:
+          DOCKER_BUILDKIT: 1
+        run: |
+          eval $(ssh-agent -s)
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-add ~/.ssh/id_rsa
+          echo ${{ github.ref_name }} > ./src/version.txt  #add content in /version page
+          docker build --ssh default -t ${{ secrets.CFD_ACR_REGISTRY }}/frontend/${{ secrets.CFD_SERVICENAME }}:${{ github.ref_name }} .
+          docker push ${{ secrets.CFD_ACR_REGISTRY }}/frontend/${{ secrets.CFD_SERVICENAME }}:${{ github.ref_name }}
+
+      - name: ImageDigest
+        run: echo -e "\e[92m ${{ steps.docker_build.outputs.digest }} \e[0m"
+
+      - name: BuildAndPushWithCodeScan
+        if: "contains(github.ref_name, 'SONAR')"
+        uses: docker/build-push-action@v3
+        id: docker_build_sonar
+        with:
+          context: .
+          file: DockerfileSonarqube
+          build-args: SONARQUBE_TOKEN=${{ secrets.CFD_SONARQUBE_TOKEN }}, CI_COMMIT_TAG=${{ github.ref_name }}
+          push: true
+          tags: ${{ secrets.CFD_ACR_REGISTRY }}/frontend/${{ secrets.CFD_SERVICENAME }}:${{ github.ref_name }}
+
+      - name: ImageDigest (approvalui)
+        if: "contains(github.ref_name, 'SONAR')"
+        run: echo -e "\e[92m ${{ steps.docker_build_sonar.outputs.digest }} \e[0m"
