@@ -45,7 +45,7 @@ jobs:
           password: ${{ secrets.CFD_ACR_TOKEN }}
 
       - name: BuildAndPush
-        if: "!contains(github.ref_name, 'SONAR')"
+        if: "!contains(github.head_ref, 'SONAR')"
         env:
           DOCKER_BUILDKIT: 1
         run: |
@@ -54,16 +54,16 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-add ~/.ssh/id_rsa
-          echo ${{ github.ref_name }} > ./src/version.txt  #add content in /version page
-          docker build --ssh default -t ${{ secrets.CFD_ACR_REGISTRY }}/frontend/${{ secrets.CFD_SERVICENAME }}:${{ github.ref_name }} .
+          echo ${{ github.head_ref }} > ./src/version.txt  #add content in /version page
+          docker build --ssh default -t ${{ secrets.CFD_ACR_REGISTRY }}/frontend/${{ secrets.CFD_SERVICENAME }}:${{ github.head_ref }} .
 
       - name: BuildAndPushWithCodeScan
-        if: "contains(github.ref_name, 'SONAR')"
+        if: "contains(github.head_ref, 'SONAR')"
         uses: docker/build-push-action@v3
         id: docker_build_sonar
         with:
           context: .
           file: DockerfileSonarqube
-          build-args: SONARQUBE_TOKEN=${{ secrets.CFD_SONARQUBE_TOKEN }}, CI_COMMIT_TAG=${{ github.ref_name }}
+          build-args: SONARQUBE_TOKEN=${{ secrets.CFD_SONARQUBE_TOKEN }}, CI_COMMIT_TAG=${{ github.head_ref }}
           push: true
-          tags: ${{ secrets.CFD_ACR_REGISTRY }}/frontend/${{ secrets.CFD_SERVICENAME }}:${{ github.ref_name }}
+          tags: ${{ secrets.CFD_ACR_REGISTRY }}/frontend/${{ secrets.CFD_SERVICENAME }}:${{ github.head_ref }}
