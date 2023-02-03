@@ -8,7 +8,7 @@ jobs:
     container: docker
     steps:
       - name: AddAPK
-        run: apk --no-cache add git jq tar 'openssh=9.1_p1-r2'
+        run: apk --no-cache add git jq tar 'openssh=9.1_p1-r1'
 
       - uses: actions/checkout@v3
         with: 
