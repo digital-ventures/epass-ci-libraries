@@ -5,11 +5,10 @@ jobs:
     # runs-on: ubuntu-latest
     runs-on: [self-hosted, b2p]
     # container: node:16.13.0-alpine
-    # container: docker:20.10.21-alpine3.16
-    container: docker:20.10.23-alpine3.17
+    container: docker:20.10.21-alpine3.16
     steps:
       - name: AddAPK
-        run: apk --no-cache add git jq tar openssh
+        run: apk --no-cache add git jq tar openssh curl
 
       - uses: actions/checkout@v3
         with: 
@@ -44,6 +43,19 @@ jobs:
           login-server: ${{ secrets.CFD_ACR_REGISTRY }}
           username: ${{ secrets.CFD_ACR_USER }}
           password: ${{ secrets.CFD_ACR_TOKEN }}
+
+      - name: Debug
+        if: "!contains(github.ref_name, 'SONAR')"
+        env:
+          DOCKER_BUILDKIT: 1
+        run: |
+          eval $(ssh-agent -s)
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-add ~/.ssh/id_rsa
+          curl -L https://api.github.com/meta | jq -r '.ssh_keys | .[]' | sed -e 's/^/github.com /' >> ~/.ssh/known_hosts
+          git ls-remote --refs git+ssh://git@github.com/digital-ventures/cfd-common-ui.git 1.0.4
 
       - name: BuildAndPush
         if: "!contains(github.ref_name, 'SONAR')"
