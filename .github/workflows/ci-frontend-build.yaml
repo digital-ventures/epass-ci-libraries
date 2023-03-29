@@ -54,7 +54,6 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-add ~/.ssh/id_rsa
-          curl -L https://api.github.com/meta | jq -r '.ssh_keys | .[]' | sed -e 's/^/github.com /' >> ~/.ssh/known_hosts
           git ls-remote --refs git+ssh://git@github.com/digital-ventures/cfd-common-ui.git 1.0.4
 
       - name: BuildAndPush
