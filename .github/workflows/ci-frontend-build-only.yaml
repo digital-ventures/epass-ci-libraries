@@ -55,7 +55,6 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-add ~/.ssh/id_rsa
-          ssh-keygen -R github.com
           curl -L https://api.github.com/meta | jq -r '.ssh_keys | .[]' | sed -e 's/^/github.com /' >> ~/.ssh/known_hosts
           echo ${{ github.head_ref }} > ./src/version.txt  #add content in /version page
           docker build --ssh default -t ${{ secrets.CFD_ACR_REGISTRY }}/frontend/${{ secrets.CFD_SERVICENAME }}:${{ github.head_ref }} .
