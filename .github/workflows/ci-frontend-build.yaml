@@ -9,7 +9,7 @@ jobs:
     container: docker:20.10.23-alpine3.17
     steps:
       - name: AddAPK
-        run: apk --no-cache add git jq tar openssh
+        run: apk --no-cache add git jq tar openssh curl
 
       - uses: actions/checkout@v3
         with: 
