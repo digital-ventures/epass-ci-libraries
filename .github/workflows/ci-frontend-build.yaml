@@ -44,18 +44,6 @@ jobs:
           username: ${{ secrets.CFD_ACR_USER }}
           password: ${{ secrets.CFD_ACR_TOKEN }}
 
-      - name: Debug
-        if: "!contains(github.ref_name, 'SONAR')"
-        env:
-          DOCKER_BUILDKIT: 1
-        run: |
-          eval $(ssh-agent -s)
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-add ~/.ssh/id_rsa
-          git ls-remote --refs git+ssh://git@github.com/digital-ventures/cfd-common-ui.git 1.0.4
-
       - name: BuildAndPush
         if: "!contains(github.ref_name, 'SONAR')"
         env:
