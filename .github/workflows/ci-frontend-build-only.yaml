@@ -52,12 +52,10 @@ jobs:
           eval $(ssh-agent -s)
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          curl -L https://api.github.com/meta | jq -r '.ssh_keys | .[]' | sed -e 's/^/github.com /' >> ~/.ssh/known_hosts
           chmod 600 ~/.ssh/id_rsa
           ssh-add ~/.ssh/id_rsa
           echo ${{ github.head_ref }} > ./src/version.txt  #add content in /version page
-          docker build -v ~/.ssh:/root/.ssh:ro -t ${{ secrets.CFD_ACR_REGISTRY }}/frontend/${{ secrets.CFD_SERVICENAME }}:${{ github.head_ref }} .
-          # docker build --ssh default -t ${{ secrets.CFD_ACR_REGISTRY }}/frontend/${{ secrets.CFD_SERVICENAME }}:${{ github.head_ref }} .
+          docker build --ssh default -t ${{ secrets.CFD_ACR_REGISTRY }}/frontend/${{ secrets.CFD_SERVICENAME }}:${{ github.head_ref }} .
 
       - name: BuildAndPushWithCodeScan
         if: "contains(github.head_ref, 'SONAR')"
