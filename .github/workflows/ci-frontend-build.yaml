@@ -23,8 +23,8 @@ jobs:
 
       - name: GitConfig
         run: |
-          git config --global user.name ${{ secrets.CFD_GIT_USER }}
-          git config --global user.email ${{ secrets.CFD_GIT_USER }}@dv.co.th
+          git config --global user.name ${{ secrets.EPASS_GIT_USER }}
+          git config --global user.email ${{ secrets.EPASS_GIT_USER }}@dv.co.th
           git config --global --add safe.directory ${GITHUB_WORKSPACE}
 
       - name: SetupDockerBuildx
@@ -40,9 +40,9 @@ jobs:
       - name: DockerLoginCFD
         uses: azure/docker-login@v1
         with:
-          login-server: ${{ secrets.CFD_ACR_REGISTRY }}
-          username: ${{ secrets.CFD_ACR_USER }}
-          password: ${{ secrets.CFD_ACR_TOKEN }}
+          login-server: ${{ secrets.EPASS_ACR_REGISTRY }}
+          username: ${{ secrets.EPASS_ACR_USER }}
+          password: ${{ secrets.EPASS_ACR_TOKEN }}
 
       - name: BuildAndPush
         if: "!contains(github.ref_name, 'SONAR')"
@@ -55,8 +55,8 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-add ~/.ssh/id_rsa
           echo ${{ github.ref_name }} > ./src/version.txt  #add content in /version page
-          docker build --ssh default -t ${{ secrets.CFD_ACR_REGISTRY }}/frontend/${{ secrets.CFD_SERVICENAME }}:${{ github.ref_name }} .
-          docker push ${{ secrets.CFD_ACR_REGISTRY }}/frontend/${{ secrets.CFD_SERVICENAME }}:${{ github.ref_name }}
+          docker build --ssh default -t ${{ secrets.EPASS_ACR_REGISTRY }}/frontend/${{ secrets.EPASS_SERVICENAME }}:${{ github.ref_name }} .
+          docker push ${{ secrets.EPASS_ACR_REGISTRY }}/frontend/${{ secrets.EPASS_SERVICENAME }}:${{ github.ref_name }}
 
       - name: BuildAndPushWithCodeScan
         if: "contains(github.ref_name, 'SONAR')"
@@ -65,6 +65,6 @@ jobs:
         with:
           context: .
           file: DockerfileSonarqube
-          build-args: SONARQUBE_TOKEN=${{ secrets.CFD_SONARQUBE_TOKEN }}, CI_COMMIT_TAG=${{ github.ref_name }}
+          build-args: SONARQUBE_TOKEN=${{ secrets.EPASS_SONARQUBE_TOKEN }}, CI_COMMIT_TAG=${{ github.ref_name }}
           push: true
-          tags: ${{ secrets.CFD_ACR_REGISTRY }}/frontend/${{ secrets.CFD_SERVICENAME }}:${{ github.ref_name }}
+          tags: ${{ secrets.EPASS_ACR_REGISTRY }}/frontend/${{ secrets.EPASS_SERVICENAME }}:${{ github.ref_name }}
