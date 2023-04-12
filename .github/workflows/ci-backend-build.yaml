@@ -78,5 +78,5 @@ jobs:
         with:
           gradle-version: 7.2
           arguments: |
-              jib
+              jib --debug
               --image=${{ secrets.EPASS_ACR_REGISTRY }}/backend/${{ secrets.EPASS_SERVICENAME }}:epass-${{ github.ref_name }}
