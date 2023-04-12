@@ -55,7 +55,7 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-add ~/.ssh/id_rsa
           echo ${{ github.head_ref }} > ./src/version.txt  #add content in /version page
-          docker build --ssh default -t ${{ secrets.EPASS_ACR_REGISTRY }}/frontend/${{ secrets.EPASS_SERVICENAME }}:${{ github.head_ref }} .
+          docker build --ssh default -t ${{ secrets.EPASS_ACR_REGISTRY }}/frontend/${{ secrets.EPASS_SERVICENAME }}:epass-${{ github.head_ref }} .
 
       - name: BuildAndPushWithCodeScan
         if: "contains(github.head_ref, 'SONAR')"
@@ -64,6 +64,6 @@ jobs:
         with:
           context: .
           file: DockerfileSonarqube
-          build-args: SONARQUBE_TOKEN=${{ secrets.EPASS_SONARQUBE_TOKEN }}, CI_COMMIT_TAG=${{ github.head_ref }}
+          build-args: SONARQUBE_TOKEN=${{ secrets.EPASS_SONARQUBE_TOKEN }}, CI_COMMIT_TAG=epass-${{ github.head_ref }}
           push: true
-          tags: ${{ secrets.EPASS_ACR_REGISTRY }}/frontend/${{ secrets.EPASS_SERVICENAME }}:${{ github.head_ref }}
+          tags: ${{ secrets.EPASS_ACR_REGISTRY }}/frontend/${{ secrets.EPASS_SERVICENAME }}:epass-${{ github.head_ref }}
