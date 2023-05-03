@@ -29,15 +29,15 @@ jobs:
           git config --global user.email ${{ secrets.EPASS_GIT_USER }}@dv.co.th
           git config --global --add safe.directory ${GITHUB_WORKSPACE}
 
-      - name: CheckCFDSubmodule
+      - name: CheckTepSubmodule
         run: |
-          echo "Check cfd-common"
-          if cat .gitmodules | grep cfd-common > /dev/null ; then
-            rm -rf cfd-common
-            git submodule add --force --name cfd-common https://${{ secrets.EPASS_GIT_USER }}:${{ secrets.EPASS_GIT_TOKEN }}@github.com/digital-ventures/cfd-common cfd-common
-            echo -e "\e[92m cfd-common is added \e[0m"
+          echo "Check tep-common"
+          if cat .gitmodules | grep tep-common > /dev/null ; then
+            rm -rf tep-common
+            git submodule add --force --name tep-common https://${{ secrets.EPASS_GIT_USER }}:${{ secrets.EPASS_GIT_TOKEN }}@github.com/digital-ventures/tep-common tep-common
+            echo -e "\e[92m tep-common is added \e[0m"
           else
-            echo -e "\e[31m cfd-common is not found \e[0m"
+            echo -e "\e[31m tep-common is not found \e[0m"
           fi
         continue-on-error: true
 
