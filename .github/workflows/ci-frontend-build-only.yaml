@@ -10,6 +10,14 @@ jobs:
       - name: AddAPK
         run: apk --no-cache add git jq tar openssh curl
 
+      - name: Download Openssh
+        run: wget https://dl-cdn.alpinelinux.org/alpine/v3.16/main/x86_64/openssh-9.0_p1-r3.apk &&
+            wget https://dl-cdn.alpinelinux.org/alpine/v3.16/main/x86_64/openssh-client-common-9.0_p1-r3.apk &&
+            wget https://dl-cdn.alpinelinux.org/alpine/v3.16/main/x86_64/openssh-client-default-9.0_p1-r3.apk
+
+      - name: Install Openssh
+        run: apk add openssh-client-common-9.0_p1-r3.apk openssh-client-default-9.0_p1-r3.apk openssh-9.0_p1-r3.apk
+
       - uses: actions/checkout@v3
         with: 
           ssh-key: "${{ secrets.SSH_PRIVATE_KEY }}"
