@@ -64,7 +64,7 @@ jobs:
           ssh-add ~/.ssh/id_rsa
           echo ${{ github.ref_name }} > ./src/version.txt  #add content in /version page
           docker build --ssh default -t ${{ secrets.EPASS_ACR_REGISTRY }}/frontend/${{ secrets.EPASS_SERVICENAME }}:epass-${{ github.ref_name }} .
-          docker push ${{ secrets.EPASS_ACR_REGISTRY }}/frontend/${{ secrets.EPASS_SERVICENAME }}:${{ github.ref_name }}
+          docker push ${{ secrets.EPASS_ACR_REGISTRY }}/frontend/${{ secrets.EPASS_SERVICENAME }}:epass-${{ github.ref_name }}
 
       - name: BuildAndPushWithCodeScan
         if: "contains(github.ref_name, 'SONAR')"
