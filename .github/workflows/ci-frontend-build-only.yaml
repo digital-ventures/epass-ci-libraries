@@ -8,7 +8,7 @@ jobs:
     container: docker:20.10.21-alpine3.16
     steps:
       - name: AddAPK
-        run: apk --no-cache add git jq tar openssh curl
+        run: apk --no-cache add git jq tar curl
 
       - name: Download Openssh
         run: wget https://dl-cdn.alpinelinux.org/alpine/v3.16/main/x86_64/openssh-9.0_p1-r3.apk &&
