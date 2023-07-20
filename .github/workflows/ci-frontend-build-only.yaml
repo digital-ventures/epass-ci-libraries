@@ -9,7 +9,7 @@ jobs:
     # container: docker:23.0.6-alpine3.18
     steps:
       - name: Update Repo
-        run: apk update && apk search -x openssh
+        run: apk update && && apk upgrade && apk search -x openssh
 
       - name: AddAPK
         run: apk --no-cache add git jq tar curl cmd:openssh
