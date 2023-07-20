@@ -5,8 +5,8 @@ jobs:
     # runs-on: ubuntu-latest
     runs-on: [self-hosted, b2p]
     # container: node:16.13.0-alpine
-    # container: docker:20.10.21-alpine3.16
-    container: docker:23.0.6-alpine3.18
+    container: docker:20.10.21-alpine3.16
+    # container: docker:23.0.6-alpine3.18
     steps:
       - name: AddAPK
         run: apk --update --no-cache add git jq tar curl openssh
