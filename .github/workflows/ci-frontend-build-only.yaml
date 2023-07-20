@@ -9,8 +9,8 @@ jobs:
     container: docker:23.0.6-alpine3.18
     steps:
       - name: APKSearch
-        run: apk search openssh
-        
+        run: apk search -x openssh
+
       - name: AddAPK
         run: apk --no-cache --update add git jq tar curl openssh=9.3_p2-r0
 
