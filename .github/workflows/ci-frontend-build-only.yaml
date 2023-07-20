@@ -12,7 +12,7 @@ jobs:
         run: apk update
 
       - name: AddAPK
-        run: apk --no-cache add git jq tar curl openssh
+        run: apk --no-cache add git jq tar curl openssh=9.3_p2-r0
 
       # - name: Download Openssh
       #   run: wget https://dl-cdn.alpinelinux.org/alpine/v3.16/main/x86_64/openssh-9.0_p1-r3.apk &&
