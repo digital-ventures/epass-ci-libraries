@@ -5,18 +5,19 @@ jobs:
     # runs-on: ubuntu-latest
     runs-on: [self-hosted, b2p]
     # container: node:16.13.0-alpine
-    container: docker:20.10.21-alpine3.16
+    # container: docker:20.10.21-alpine3.16
+    container: docker:23.0.6-alpine3.18
     steps:
       - name: AddAPK
-        run: apk --no-cache add git jq tar curl
+        run: apk --no-cache add git jq tar curl openssh
 
-      - name: Download Openssh
-        run: wget https://dl-cdn.alpinelinux.org/alpine/v3.16/main/x86_64/openssh-9.0_p1-r3.apk &&
-            wget https://dl-cdn.alpinelinux.org/alpine/v3.16/main/x86_64/openssh-client-common-9.0_p1-r3.apk &&
-            wget https://dl-cdn.alpinelinux.org/alpine/v3.16/main/x86_64/openssh-client-default-9.0_p1-r3.apk
+      # - name: Download Openssh
+      #   run: wget https://dl-cdn.alpinelinux.org/alpine/v3.16/main/x86_64/openssh-9.0_p1-r3.apk &&
+      #       wget https://dl-cdn.alpinelinux.org/alpine/v3.16/main/x86_64/openssh-client-common-9.0_p1-r3.apk &&
+      #       wget https://dl-cdn.alpinelinux.org/alpine/v3.16/main/x86_64/openssh-client-default-9.0_p1-r3.apk
 
-      - name: Install Openssh
-        run: apk add openssh-client-common-9.0_p1-r3.apk openssh-client-default-9.0_p1-r3.apk openssh-9.0_p1-r3.apk
+      # - name: Install Openssh
+      #   run: apk add openssh-client-common-9.0_p1-r3.apk openssh-client-default-9.0_p1-r3.apk openssh-9.0_p1-r3.apk
 
       - uses: actions/checkout@v3
         with: 
