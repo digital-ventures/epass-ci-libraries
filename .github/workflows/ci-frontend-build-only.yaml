@@ -8,11 +8,11 @@ jobs:
     # container: docker:20.10.21-alpine3.16
     container: docker:23.0.6-alpine3.18
     steps:
-      - name: APKSearch
-        run: apk search -x openssh
+      - name: Update Repo
+        run: apk update
 
       - name: AddAPK
-        run: apk --no-cache --update add git jq tar curl openssh=9.3_p2-r0
+        run: apk --no-cache add git jq tar curl openssh
 
       # - name: Download Openssh
       #   run: wget https://dl-cdn.alpinelinux.org/alpine/v3.16/main/x86_64/openssh-9.0_p1-r3.apk &&
